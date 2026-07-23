@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, tap, retry, timer } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
 import {
@@ -19,11 +19,6 @@ interface TaskResponse {
   data: Task;
 }
 
-/**
- * Owns the authoritative task list as a BehaviorSubject so every component
- * that subscribes (board, columns, cards) reacts automatically to CRUD
- * operations without manual re-fetching or event plumbing.
- */
 @Injectable({ providedIn: 'root' })
 export class TaskService {
   private readonly baseUrl = `${environment.apiUrl}/tasks`;
@@ -36,7 +31,13 @@ export class TaskService {
   loadTasks(): Observable<TaskListResponse> {
     return this.http
       .get<TaskListResponse>(this.baseUrl)
-      .pipe(tap((res) => this.tasksSubject.next(res.data)));
+      .pipe(
+        retry({
+          count: 5,
+          delay: () => timer(5000),
+        }),
+        tap((res) => this.tasksSubject.next(res.data))
+      );
   }
 
   createTask(payload: CreateTaskPayload): Observable<TaskResponse> {
@@ -71,7 +72,6 @@ export class TaskService {
     );
   }
 
-  /** Optimistically reorders/moves a task locally; used while a drag-drop PATCH is in flight. */
   applyOptimisticMove(tasks: Task[]): void {
     this.tasksSubject.next(tasks);
   }
