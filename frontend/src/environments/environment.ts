@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiUrl: '/api',
+  apiUrl: 'https://sprint-board-backend.onrender.com/api'
 };
