@@ -1,0 +1,37 @@
+<article class="task-card" [attr.data-priority]="task.priority">
+  <header class="task-card__header">
+    <span class="priority-chip" [attr.data-priority]="task.priority">{{ task.priority }}</span>
+    <div class="task-card__actions">
+      <button
+        type="button"
+        class="icon-btn"
+        title="Edit task"
+        aria-label="Edit task"
+        (click)="edit.emit(task)"
+      >
+        ✎
+      </button>
+      <button
+        type="button"
+        class="icon-btn icon-btn--danger"
+        title="Delete task"
+        aria-label="Delete task"
+        (click)="delete.emit(task)"
+      >
+        ✕
+      </button>
+    </div>
+  </header>
+
+  <h3 class="task-card__title">{{ task.title }}</h3>
+
+  <p class="task-card__description" *ngIf="task.description">{{ task.description }}</p>
+
+  <footer class="task-card__footer">
+    <span class="assignee" [class.assignee--mine]="isMine">
+      <span class="assignee__avatar">{{ initials }}</span>
+      {{ isMine ? 'Me' : task.assigneeId }}
+    </span>
+    <span class="task-card__id">#{{ task.id }}</span>
+  </footer>
+</article>

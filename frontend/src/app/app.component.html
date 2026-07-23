@@ -1,0 +1,31 @@
+<div class="app-shell">
+  <header class="app-header">
+    <div class="app-header__brand">
+      <span class="app-header__mark" aria-hidden="true">
+        <span class="app-header__mark-bar"></span>
+        <span class="app-header__mark-bar"></span>
+        <span class="app-header__mark-bar"></span>
+      </span>
+      <div class="app-header__copy">
+        <p class="app-header__eyebrow">Sprint workspace</p>
+        <h1>Agile Sprint Board</h1>
+        <p class="app-header__tagline">Plan, track and move work across your team’s sprint.</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-main">
+    <app-board></app-board>
+  </main>
+</div>
+
+<div class="toast-tray" aria-live="polite">
+  <div
+    class="toast"
+    *ngFor="let n of notifications.notifications()"
+    [attr.data-kind]="n.kind"
+  >
+    <span class="toast__dot" aria-hidden="true"></span>
+    {{ n.message }}
+  </div>
+</div>

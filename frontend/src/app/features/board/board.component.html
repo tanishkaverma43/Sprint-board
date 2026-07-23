@@ -1,0 +1,75 @@
+<div class="toolbar" [formGroup]="filterForm">
+  <div class="search-field">
+    <span class="search-field__icon">⌕</span>
+    <input
+      type="search"
+      formControlName="search"
+      placeholder="Search tasks..."
+      aria-label="Search tasks"
+      enterkeyhint="search"
+    />
+  </div>
+
+  <div class="toolbar__filters">
+    <select formControlName="priority" aria-label="Filter by priority">
+      <option value="">All priorities</option>
+      <option *ngFor="let p of priorities" [value]="p.key">{{ p.label }}</option>
+    </select>
+
+    <div class="segmented" role="group" aria-label="Filter by assignee">
+      <button
+        type="button"
+        class="segmented__btn"
+        [class.segmented__btn--active]="assigneeFilter() === 'all'"
+        (click)="setAssigneeFilter('all')"
+      >
+        All
+      </button>
+      <button
+        type="button"
+        class="segmented__btn"
+        [class.segmented__btn--active]="assigneeFilter() === 'me'"
+        (click)="setAssigneeFilter('me')"
+      >
+        Me
+      </button>
+    </div>
+
+    <button type="button" class="btn btn--ghost btn--sm" (click)="clearFilters()">
+      Clear
+    </button>
+
+    <button type="button" class="btn btn--primary" (click)="openCreateModal('todo')">
+      + New Task
+    </button>
+  </div>
+</div>
+
+<p class="board-hint" aria-hidden="true">Swipe columns →</p>
+
+<div class="board" cdkDropListGroup *ngIf="!isLoading(); else loadingState">
+  <app-board-column
+    *ngFor="let s of statuses"
+    [status]="s.key"
+    [title]="s.label"
+    [tasks]="columns()[s.key]"
+    (dropped)="onDrop($event)"
+    (addTask)="openCreateModal($event)"
+    (editTask)="openEditModal($event)"
+    (deleteTask)="handleDelete($event)"
+  ></app-board-column>
+</div>
+
+<ng-template #loadingState>
+  <div class="board board--loading">
+    <div class="skeleton-column" *ngFor="let s of statuses"></div>
+  </div>
+</ng-template>
+
+<app-task-form-modal
+  [open]="isModalOpen()"
+  [task]="editingTask()"
+  [defaultStatus]="modalDefaultStatus()"
+  (save)="handleSave($event)"
+  (close)="closeModal()"
+></app-task-form-modal>

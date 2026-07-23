@@ -1,0 +1,74 @@
+<div class="modal-backdrop" *ngIf="open" (click)="onBackdropClick($event)">
+  <div class="modal" role="dialog" aria-modal="true">
+    <header class="modal__header">
+      <h2>{{ isEdit ? 'Edit Task' : 'New Task' }}</h2>
+      <button type="button" class="modal__close" aria-label="Close" (click)="close.emit()">
+        ✕
+      </button>
+    </header>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="modal__form">
+      <div class="field">
+        <label for="title">Title</label>
+        <input
+          id="title"
+          type="text"
+          formControlName="title"
+          placeholder="e.g. Implement search filter"
+          maxlength="120"
+          autocomplete="off"
+        />
+        <p class="field__error" *ngIf="titleControl.invalid && titleControl.touched">
+          Title is required (max 120 characters).
+        </p>
+      </div>
+
+      <div class="field">
+        <label for="description">Description</label>
+        <textarea
+          id="description"
+          formControlName="description"
+          rows="3"
+          placeholder="Optional details about this task"
+        ></textarea>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="status">Status</label>
+          <select id="status" formControlName="status">
+            <option *ngFor="let s of statuses" [value]="s.key">{{ s.label }}</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="priority">Priority</label>
+          <select id="priority" formControlName="priority">
+            <option *ngFor="let p of priorities" [value]="p.key">{{ p.label }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Assignee</label>
+        <div class="segmented">
+          <label class="segmented__option">
+            <input type="radio" formControlName="assigneeId" value="me" />
+            <span>Me</span>
+          </label>
+          <label class="segmented__option">
+            <input type="radio" formControlName="assigneeId" value="teammate" />
+            <span>Teammate</span>
+          </label>
+        </div>
+      </div>
+
+      <footer class="modal__footer">
+        <button type="button" class="btn btn--ghost" (click)="close.emit()">Cancel</button>
+        <button type="submit" class="btn btn--primary">
+          {{ isEdit ? 'Save changes' : 'Create task' }}
+        </button>
+      </footer>
+    </form>
+  </div>
+</div>
