@@ -27,7 +27,11 @@ function errorHandler(err, req, res, next) {
   const isServerError = statusCode >= 500;
 
   if (isServerError) {
-    console.error(`[${new Date().toISOString()}] Unhandled error:`, err);
+    console.error("========== DATABASE ERROR ==========");
+    console.error(err);
+    console.error("Message:", err.message);
+    console.error("Stack:", err.stack);
+    console.error("====================================");
   }
 
   res.status(statusCode).json({
